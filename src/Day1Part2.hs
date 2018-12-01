@@ -28,6 +28,6 @@ findRepeatingFrequency init nums xs =
 
 main :: IO ()
 main = do
-  let file = "-6\n+3\n+8\n+5\n-6\n"
+  file <- readFile "input.txt"
   let input = filter (not . null) $ splitOn "\n" file
   print (findRepeatingFrequency 0 [] input)
