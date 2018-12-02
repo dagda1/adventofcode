@@ -14,6 +14,6 @@ sumInput = foldl parseString 0
 
 main :: IO ()
 main = do
-  file <- readFile "input.txt"
+  file <- readFile "day1.txt"
   let input = filter (not . null) $ splitOn "\n" file
   print (sumInput input)
