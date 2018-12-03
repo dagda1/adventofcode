@@ -1,0 +1,8 @@
+{
+  "name": "advent-of-code",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/dagda1/adventofcode.git",
+  "author": "Paul Cowan <paul.cowan@bjss.com>",
+  "license": "MIT"
+}

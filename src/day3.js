@@ -22,12 +22,14 @@ class Rect {
     this.overlaps = false;
   }
 
-  // this(1, 3) - (4, 12)
-  // rect(3, 1) - (12, 4);
   doesOverlap(rect) {
-      if (this.x1 >= rect.x2 || rect.x1 >= this.x2) return false;
+    if (this.x1 >= rect.x2 || rect.x1 >= this.x2) {
+      return false;
+    }
 
-    if (this.y1 >= rect.y2 || rect.y1 >= this.y2) return false;
+    if (this.y1 >= rect.y2 || rect.y1 >= this.y2) {
+      return false;
+    }
 
     this.overlaps = true;
   }
@@ -49,17 +51,20 @@ rects.forEach(current => {
     });
 });
 
-let total = 0;
+const overlaps = rects.filter(x => x.overlaps);
 
-rects.forEach(x => {
-  if (x.overlaps) {
-    total += 1;
-  } else {
-    console.log(x.id);
-  }
-});
+const maxOrMin = (op, prop) =>
+  Math[op].apply(
+    Math,
+    overlaps.map(o => {
+      return o[prop];
+    })
+  );
 
 console.log(rects.length);
-console.log(total);
+const xOverlap = maxOrMin('min', 'x2') - maxOrMin('max', 'x1');
+const yOverlap = maxOrMin('min', 'y2') - maxOrMin('max', 'y1');
+
+const area = xOverlap * yOverlap;
 
 // 101781
