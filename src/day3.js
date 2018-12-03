@@ -1,0 +1,63 @@
+'use strict';
+const fs = require('fs');
+const path = require('path');
+
+/* const input = '#1 @ 1,3: 4x4\n#2 @ 3,1: 4x4\n#3 @ 5,5: 2x2'; */
+
+const input = fs.readFileSync(path.join(__dirname, 'day3.txt')).toString();
+
+const lines = input.split('\n').slice(0, -1);
+
+class Rect {
+  constructor(line) {
+    const [x, y] = line.match(/\d+,\d+/g, line)[0].split(',');
+    const [width, height] = line.match(/\d+x\d+/g, line)[0].split('x');
+    this.id = line.match(/^#\d+/g, line)[0].split('#')[1];
+    this.x1 = x;
+    this.y1 = y;
+    this.width = width;
+    this.height = height;
+    this.x2 = x * width;
+    this.y2 = y * height;
+    this.overlaps = false;
+  }
+
+  // this(1, 3) - (4, 12)
+  // rect(3, 1) - (12, 4);
+  doesOverlap(rect) {
+    console.log('--------------------');
+    console.log(this.toString());
+    console.log(`this.x2 = ${this.x2} < rect.x1 = ${rect.x1} = ${this.x2 < rect.x1}`);
+    console.log(`this.x1 = ${this.x1} > rect.x2 = ${rect.x2} = ${this.x1 > rect.x2}`);
+    console.log(`this.y2 = ${this.y2} < rect.y1 = ${rect.y1} = ${this.y2 < rect.y1}`);
+    console.log(`this.y2 = ${rect.y1}, this.y1 = ${rect.y2} = ${this.y1 > rect.y2}`);
+    console.log('--------------------');
+    if (this.x2 < rect.x1 || this.x1 > rect.x2) return;
+
+    if (this.y2 < rect.y1 || this.y1 > rect.y2) return;
+
+    this.overlaps = true;
+  }
+
+  toString() {
+    return `x1 = ${this.x1}, y1 = ${this.y1}, x2 = ${this.x2}, y2 = ${this.y2}, width = ${this.width},d height = ${
+      this.height
+    }`;
+  }
+}
+
+const rects = lines.map(x => new Rect(x));
+
+rects.forEach(current => {
+  rects
+    .filter(x => x !== current)
+    .forEach(rect => {
+      current.doesOverlap(rect);
+    });
+});
+
+const total = rects.reduce((acc, x) => {
+  return x.overlaps ? acc + 1 : acc;
+}, 0);
+
+console.log(total);
