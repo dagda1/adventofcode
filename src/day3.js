@@ -13,34 +13,27 @@ class Rect {
     const [x, y] = line.match(/\d+,\d+/g, line)[0].split(',');
     const [width, height] = line.match(/\d+x\d+/g, line)[0].split('x');
     this.id = line.match(/^#\d+/g, line)[0].split('#')[1];
-    this.x1 = x;
-    this.y1 = y;
-    this.width = width;
-    this.height = height;
-    this.x2 = x * width;
-    this.y2 = y * height;
+    this.x1 = Number(x);
+    this.y1 = Number(y);
+    this.width = Number(width);
+    this.height = Number(height);
+    this.x2 = Number(x) + Number(width);
+    this.y2 = Number(y) + Number(height);
     this.overlaps = false;
   }
 
   // this(1, 3) - (4, 12)
   // rect(3, 1) - (12, 4);
   doesOverlap(rect) {
-    console.log('--------------------');
-    console.log(this.toString());
-    console.log(`this.x2 = ${this.x2} < rect.x1 = ${rect.x1} = ${this.x2 < rect.x1}`);
-    console.log(`this.x1 = ${this.x1} > rect.x2 = ${rect.x2} = ${this.x1 > rect.x2}`);
-    console.log(`this.y2 = ${this.y2} < rect.y1 = ${rect.y1} = ${this.y2 < rect.y1}`);
-    console.log(`this.y2 = ${rect.y1}, this.y1 = ${rect.y2} = ${this.y1 > rect.y2}`);
-    console.log('--------------------');
-    if (this.x2 < rect.x1 || this.x1 > rect.x2) return;
+    if (this.x1 > rect.x2 || rect.x1 > this.x2) return;
 
-    if (this.y2 < rect.y1 || this.y1 > rect.y2) return;
+    if (this.y2 < rect.y1 || rect.y2 < this.y1) return;
 
     this.overlaps = true;
   }
 
   toString() {
-    return `x1 = ${this.x1}, y1 = ${this.y1}, x2 = ${this.x2}, y2 = ${this.y2}, width = ${this.width},d height = ${
+    return `x1 = ${this.x1}, y1 = ${this.y1}, x2 = ${this.x2}, y2 = ${this.y2}, width = ${this.width}, height = ${
       this.height
     }`;
   }
@@ -56,8 +49,14 @@ rects.forEach(current => {
     });
 });
 
-const total = rects.reduce((acc, x) => {
-  return x.overlaps ? acc + 1 : acc;
-}, 0);
+let total = 0;
+
+rects.forEach(x => {
+  if (x.overlaps) {
+    total += 1;
+  }
+});
 
 console.log(total);
+
+// 101781
