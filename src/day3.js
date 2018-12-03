@@ -2,7 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 
-/* const input = '#1 @ 1,3: 4x4\n#2 @ 3,1: 4x4\n#3 @ 5,5: 2x2'; */
+/* const input = '#1 @ 1,3: 4x4\n#2 @ 3,1: 4x4\n#3 @ 5,5: 2x2\n'; */
 
 const input = fs.readFileSync(path.join(__dirname, 'day3.txt')).toString();
 
@@ -17,17 +17,17 @@ class Rect {
     this.y1 = Number(y);
     this.width = Number(width);
     this.height = Number(height);
-    this.x2 = Number(x) + Number(width);
-    this.y2 = Number(y) + Number(height);
+    this.x2 = this.x1 + Number(width);
+    this.y2 = this.y1 + Number(height);
     this.overlaps = false;
   }
 
   // this(1, 3) - (4, 12)
   // rect(3, 1) - (12, 4);
   doesOverlap(rect) {
-    if (this.x1 > rect.x2 || rect.x1 > this.x2) return;
+      if (this.x1 >= rect.x2 || rect.x1 >= this.x2) return false;
 
-    if (this.y2 < rect.y1 || rect.y2 < this.y1) return;
+    if (this.y1 >= rect.y2 || rect.y1 >= this.y2) return false;
 
     this.overlaps = true;
   }
@@ -54,9 +54,12 @@ let total = 0;
 rects.forEach(x => {
   if (x.overlaps) {
     total += 1;
+  } else {
+    console.log(x.id);
   }
 });
 
+console.log(rects.length);
 console.log(total);
 
 // 101781
