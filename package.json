@@ -4,5 +4,8 @@
   "main": "index.js",
   "repository": "https://github.com/dagda1/adventofcode.git",
   "author": "Paul Cowan <paul.cowan@bjss.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "moment": "^2.22.2"
+  }
 }
