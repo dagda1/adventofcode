@@ -33,16 +33,41 @@ class Rect {
 
     this.overlaps = true;
   }
-
-  toString() {
-    return `x1 = ${this.x1}, y1 = ${this.y1}, x2 = ${this.x2}, y2 = ${this.y2}, width = ${this.width}, height = ${
-      this.height
-    }`;
-  }
 }
 
 const rects = lines.map(x => new Rect(x));
 
+// part 1
+
+const getOverlappingArea = claims => {
+  const claimArea = [];
+
+  let overlaps = 0;
+
+  for (let claim of claims) {
+    const { x1, x2, y1, y2 } = claim;
+
+    for (let row = y1; row < y2; row++) {
+      for (let col = x1; col < x2; col++) {
+        if (!claimArea[row]) {
+          claimArea[row] = [];
+        }
+        if (!claimArea[row][col]) {
+          claimArea[row][col] = 0;
+        } else if (claimArea[row][col] === 1) {
+          overlaps++;
+        }
+        claimArea[row][col]++;
+      }
+    }
+  }
+
+  return overlaps;
+};
+
+console.log(`overlapping area of ${getOverlappingArea(rects)} inches squared`);
+
+// part 2
 rects.forEach(current => {
   rects
     .filter(x => x !== current)
@@ -51,20 +76,4 @@ rects.forEach(current => {
     });
 });
 
-const overlaps = rects.filter(x => x.overlaps);
-
-const maxOrMin = (op, prop) =>
-  Math[op].apply(
-    Math,
-    overlaps.map(o => {
-      return o[prop];
-    })
-  );
-
-console.log(rects.length);
-const xOverlap = maxOrMin('min', 'x2') - maxOrMin('max', 'x1');
-const yOverlap = maxOrMin('min', 'y2') - maxOrMin('max', 'y1');
-
-const area = xOverlap * yOverlap;
-
-// 101781
+console.log(`non overlapping rect of id ${rects.find(x => !x.overlaps).id}`);
