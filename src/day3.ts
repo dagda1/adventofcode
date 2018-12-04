@@ -1,15 +1,22 @@
 'use strict';
-const fs = require('fs');
-const path = require('path');
-
-/* const input = '#1 @ 1,3: 4x4\n#2 @ 3,1: 4x4\n#3 @ 5,5: 2x2\n'; */
+import fs from 'fs';
+import path from 'path';
 
 const input = fs.readFileSync(path.join(__dirname, 'day3.txt')).toString();
 
-const lines = input.split('\n').slice(0, -1);
+const lines: String[] = input.split('\n').slice(0, -1);
 
 class Rect {
-  constructor(line) {
+  id: string;
+  x1: number;
+  x2: number;
+  y1: number;
+  y2: number;
+  width: number;
+  height: number;
+  overlaps: boolean;
+
+  constructor(line: any) {
     const [x, y] = line.match(/\d+,\d+/g, line)[0].split(',');
     const [width, height] = line.match(/\d+x\d+/g, line)[0].split('x');
     this.id = line.match(/^#\d+/g, line)[0].split('#')[1];
@@ -22,13 +29,13 @@ class Rect {
     this.overlaps = false;
   }
 
-  doesOverlap(rect) {
+  doesOverlap(rect: Rect) {
     if (this.x1 >= rect.x2 || rect.x1 >= this.x2) {
-      return false;
+      return;
     }
 
     if (this.y1 >= rect.y2 || rect.y1 >= this.y2) {
-      return false;
+      return;
     }
 
     this.overlaps = true;
@@ -39,8 +46,13 @@ const rects = lines.map(x => new Rect(x));
 
 // part 1
 
-const getOverlappingArea = claims => {
-  const claimArea = [];
+interface Claim {
+  row: any;
+  column: any;
+}
+
+const getOverlappingArea = (claims: Rect[]) => {
+  const claimArea: number[][] = [];
 
   let overlaps = 0;
 
@@ -76,4 +88,4 @@ rects.forEach(current => {
     });
 });
 
-console.log(`non overlapping rect of id ${rects.find(x => !x.overlaps).id}`);
+console.log(`non overlapping rect of id ${rects.find(x => !x.overlaps)!!.id}`);
