@@ -2,38 +2,29 @@ import fs from 'fs';
 import path from 'path';
 import { maxBy, range, minBy } from 'lodash';
 
-/* 
 const input = fs
   .readFileSync(path.join(process.cwd(), 'src/day6.txt'))
   .toString()
-  .trim().split('\n');
- */
-const input = `1, 1
-1, 6
-8, 3
-3, 4
-5, 5
-8, 9`.split('\n');
+  .trim()
+  .split('\n');
 
 export interface Point {
   x: number;
   y: number;
+  count?: number;
+  isInfinite?: boolean;
 }
 
 const points: Point[] = input.map(s => {
   const [x, y] = s.split(',').map(i => Number(i));
 
-  return { x, y };
+  return { x, y, count: 0 };
 });
 
-const minX = minBy(points, 'x').x;
-const minY = minBy(points, 'y').y;
 const maxX = maxBy(points, 'x').x;
 const maxY = maxBy(points, 'y').y;
 
-const maxDistance = Number.MAX_VALUE;
-
-console.log(maxDistance);
+const isAtTheEdgeOfGrid = ({ x, y }: Point) => x === 0 || y === 0 || x === maxX - 1 || y === maxY - 1;
 
 const manhattan = (left: Point, right: Point) => {
   return Math.abs(right.x - left.x) + Math.abs(right.y - left.y);
@@ -45,35 +36,46 @@ interface Distance {
   distance: number;
 }
 
-const grid: Distance[] = [];
-
-const minimums: Distance[] = [];
+let region = 0;
 
 for (const x of range(maxX + 1)) {
   for (const y of range(maxY + 1)) {
+    let closestCoordinates: Point[] = [];
+    let minDistance = Infinity;
+    let totalDistance = 0;
+
     for (const point of points) {
       const a: Point = { x, y };
-      const distance: Distance = { a, b: point, distance: manhattan(a, point) };
+      const line: Distance = { a, b: point, distance: manhattan(a, point) };
 
-      grid.push(distance);
+      totalDistance += line.distance;
+
+      if (line.distance < minDistance) {
+        minDistance = line.distance;
+        closestCoordinates = [point];
+      } else if (line.distance === minDistance) {
+        closestCoordinates.push(point);
+      }
     }
 
-    const minimum = minBy(grid, 'distance');
-
-    minimums.push(minimum);
+    if (closestCoordinates.length === 1) {
+      closestCoordinates[0].count++;
+      if (isAtTheEdgeOfGrid({ x, y })) {
+        closestCoordinates[0].isInfinite = true;
+      }
+    }
+    if (totalDistance < 10000) {
+      region++;
+    }
   }
 }
 
-const filteredGrid = grid.filter(point => {
-  if (point.a.x === 0 || point.a.y === 0) {
-    return false;
+let largest = 0;
+for (let point of points) {
+  if (!point.isInfinite && point.count > largest) {
+    largest = point.count;
   }
+}
 
-  if (point.a.x === maxX || point.a.y === maxY) {
-    return false;
-  }
-
-  return true;
-});
-
-console.dir(grid);
+console.log(`largest area = ${largest}`);
+console.log(`regions less than 1000 = ${region}`);
