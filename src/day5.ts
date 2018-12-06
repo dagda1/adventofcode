@@ -1,4 +1,3 @@
-//const input = fs.readFileSync(path.join(process.cwd(), 'src/day4.txt')).toString();
 import fs from 'fs';
 import path from 'path';
 
